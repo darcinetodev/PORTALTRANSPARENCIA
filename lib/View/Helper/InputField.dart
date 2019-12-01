@@ -15,9 +15,11 @@ class InputField extends StatelessWidget {
         return TextField(
           onChanged: onChanged,
           decoration: InputDecoration(
+            border: InputBorder.none,
             hintText: hint,
             errorText: snapshot.hasError ? snapshot.error : null
-          )
+          ),
+          style: TextStyle(fontSize: 20)
         );
       },
     );

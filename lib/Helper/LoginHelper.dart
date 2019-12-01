@@ -1,6 +1,6 @@
 import 'dart:async';
 
-class PeoplesHelper {
+class LoginHelper {
 
   final validateEmail = StreamTransformer<String, String>.fromHandlers(
     handleData: (email, sink){
@@ -14,7 +14,7 @@ class PeoplesHelper {
   
   final validatePassword = StreamTransformer<String, String>.fromHandlers(
     handleData: (password, sink){
-      if(password.length > 3){
+      if(password.length >= 6){
         sink.add(password);
       } else {
         sink.addError('Insira uma senha válida!');
