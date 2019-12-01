@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "341761491701",
+    "firebase_url": "https://transparencia-portal.firebaseio.com",
+    "project_id": "transparencia-portal",
+    "storage_bucket": "transparencia-portal.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:341761491701:android:db3dd8eb70e5366b10fbbc",
+        "android_client_info": {
+          "package_name": "com.truoon.portaltransparencia.portaltransparencia"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "341761491701-b72gqind46i0375g3dglm7ahq2m0ker7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.truoon.portaltransparencia.portaltransparencia",
+            "certificate_hash": "ffde4a1f3582416672cd001b29479cf808231fc5"
+          }
+        },
+        {
+          "client_id": "341761491701-6iv8bersk2jeqth2cf81shmg7df2rcra.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQLFr9h69f5Z1lgM4FBM4b-prlivcL7RU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "341761491701-6iv8bersk2jeqth2cf81shmg7df2rcra.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
