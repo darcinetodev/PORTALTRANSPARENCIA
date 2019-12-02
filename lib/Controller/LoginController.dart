@@ -2,6 +2,7 @@ import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:portaltransparencia/Helper/LoginHelper.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum LoginState {IDLE, LOADING, SUCESS, FAIL}
 
@@ -25,9 +26,18 @@ class LoginController extends BlocBase with LoginHelper {
   LoginController() {
     FirebaseAuth.instance.onAuthStateChanged.listen((user) {
       if(user != null) {
-        _stateController.add(LoginState.SUCESS);
+        Firestore.instance.collection("dataPeople")
+                          .document(user.uid).get()
+                          .then((active) {
+                            if(active.data["active"] == 1)
+                              _stateController.add(LoginState.SUCESS);
+                            else {
+                              _stateController.add(LoginState.FAIL);
+                              FirebaseAuth.instance.signOut();
+                            }
+                          });
       } else {
-        _stateController.add(LoginState.FAIL);
+        _stateController.add(LoginState.IDLE);
       }
     });
   }

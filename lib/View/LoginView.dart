@@ -82,10 +82,8 @@ class _LoginViewState extends State<LoginView> {
                               child:
                                   Text('Ainda não é cadastrado? cadastre-se!'),
                               onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => RegisterView()),
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(builder: (context)=>RegisterView())
                                 );
                               },
                             ),
@@ -104,6 +102,7 @@ class _LoginViewState extends State<LoginView> {
                                 child: Center(
                                   child: InputField(
                                     hint: 'Digite seu e-mail',
+                                    obscure: false,
                                     stream: _loginController.outEmail,
                                     onChanged: _loginController.changeEmail,
                                   ),
@@ -125,6 +124,7 @@ class _LoginViewState extends State<LoginView> {
                                 child: Center(
                                   child: InputField(
                                     hint: 'Digite sua senha',
+                                    obscure: true,
                                     stream: _loginController.outPassword,
                                     onChanged:
                                         _loginController.changePassword,

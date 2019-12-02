@@ -1,47 +1,31 @@
-final String idColumn = "idColumn";
-final String idPeopleColumn = "idPeopleColumn";
-final String idCondominiumColumn = "idCondominiumColumn";
-final String titleColumn = "titleColumn";
-final String descriptionColumn = "descriptionColumn";
-final String textColumn = "textColumn";
-final String imgColumn = "imgColumn";
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:portaltransparencia/Model/Model.dart';
 
-class NewsModel {
-  int id;
-  String idPeople;
-  String idCondominium;
+class NewsModel implements Model {
+  String _documentId;
   String title;
-  String description;
-  String text;
-  String img;
+  String desc;
+  String condominium;
 
-  NewsModel.fromMap(Map map) {
-    id = map[idColumn];
-    idPeople = map[idPeopleColumn];
-    idCondominium = map[idCondominiumColumn];
-    title = map[titleColumn];
-    description = map[descriptionColumn];
-    text = map[textColumn];
-    img = map[imgColumn];
+  NewsModel();
+
+  NewsModel.fromMap(DocumentSnapshot document) {
+    _documentId = document.documentID;
+
+    this.title = document.data["title"];
+    this.desc = document.data["desc"];
+    this.condominium = document.data["condominium"];
   }
 
-  Map toMap() {
-    Map<String, dynamic> map = {
-      idPeopleColumn: idPeople,
-      idCondominiumColumn: idCondominium,
-      titleColumn: title,
-      descriptionColumn: description,
-      textColumn: text,
-      imgColumn: img
-    };
-    if(id != null){
-      map[idColumn] = id;
-    }
+  @override
+  toMap() {
+    var map = new Map<String, dynamic>();
+    map['title'] = this.title;
+    map['desc'] = this.desc;
+    map['condominium'] = this.condominium;
     return map;
   }
 
   @override
-  String toString() {
-    return "NewsModel(id: $id, idPeople: $idPeople, idCondominium: $idCondominium, title: $title, description: $description, text: $text, img: $img)";
-  }
+  String documentId() => _documentId;
 }
