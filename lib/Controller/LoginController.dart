@@ -11,10 +11,12 @@ class LoginController extends BlocBase with LoginHelper {
   final _emailController = BehaviorSubject<String>();
   final _passwordController = BehaviorSubject<String>();
   final _stateController = BehaviorSubject<LoginState>();
+  final _uidController = BehaviorSubject<String>();
 
   Stream<String> get outEmail => _emailController.stream.transform(validateEmail);
   Stream<String> get outPassword => _passwordController.stream.transform(validatePassword);
   Stream<LoginState> get outState => _stateController.stream;
+  Stream<String> get outuid => _uidController.stream;
 
   Stream<bool> get outSubmitValid => Observable.combineLatest2(
     outEmail, outPassword, (a, b) => true
@@ -24,31 +26,37 @@ class LoginController extends BlocBase with LoginHelper {
   Function(String) get changePassword => _passwordController.sink.add;
 
   LoginController() {
-    FirebaseAuth.instance.onAuthStateChanged.listen((user) {
+    auth();
+  }
+
+  Future auth() async {
+    FirebaseAuth.instance.onAuthStateChanged.listen((user) async {
       if(user != null) {
-        Firestore.instance.collection("dataPeople")
-                          .document(user.uid).get()
-                          .then((active) {
-                            if(active.data["active"] == 1)
-                              _stateController.add(LoginState.SUCESS);
-                            else {
-                              _stateController.add(LoginState.FAIL);
-                              FirebaseAuth.instance.signOut();
-                            }
-                          });
+        _uidController.add(user.uid);
+        
+        await Firestore.instance.collection("dataPeople").document(user.uid).get().then((doc) async {
+          if(doc.data["active"] == 1){
+            _stateController.add(LoginState.SUCESS);
+          }
+          else {
+            _stateController.add(LoginState.FAIL);
+            await FirebaseAuth.instance.signOut();
+          }}).catchError((e) async {
+            _stateController.add(LoginState.FAIL);
+            await FirebaseAuth.instance.signOut();
+          });
       } else {
         _stateController.add(LoginState.IDLE);
       }
     });
   }
 
-  void submit() {
+  Future submit() async {
     final email = _emailController.value;
     final password = _passwordController.value;
 
     _stateController.add(LoginState.LOADING);
-
-    FirebaseAuth.instance.signInWithEmailAndPassword(
+    await FirebaseAuth.instance.signInWithEmailAndPassword(
       email: email,
       password: password
     ).catchError((e) {
@@ -61,6 +69,7 @@ class LoginController extends BlocBase with LoginHelper {
     _emailController.close();
     _passwordController.close();
     _stateController.close();
+    _uidController.close();
   }
   
 }

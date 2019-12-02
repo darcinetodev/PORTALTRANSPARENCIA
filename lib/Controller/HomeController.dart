@@ -62,8 +62,8 @@ class HomeController extends BlocBase with HomeHelper {
     });
   }
 
-  void logout() {
-    FirebaseAuth.instance.signOut();
+  Future logout() async {
+    await FirebaseAuth.instance.signOut().catchError((e) => _stateController.add(HomeState.FAIL));
     _stateController.add(HomeState.LOGOUT);
   }
 

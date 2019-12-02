@@ -17,7 +17,11 @@ class _NewsViewState extends State<NewsView> {
     return StreamBuilder<List<NewsModel>>(
       stream: _newsController.outNews,
       builder: (context, snapshot) {
-        if (!snapshot.hasData) return CircularProgressIndicator();
+        if (!snapshot.hasData) return Center(
+          child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation(Colors.white),
+          ),
+        );
 
         return Container(
           child: ListView(

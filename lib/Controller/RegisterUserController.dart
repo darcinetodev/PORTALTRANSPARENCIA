@@ -35,8 +35,7 @@ class RegisterUserController extends BlocBase with RegisterUserHelper {
   Function(String) get changeName => _nameController.sink.add;
   Function(String) get changeCondominium => _condominiumController.sink.add;
 
-  void createUser() {
-    String uid;
+  Future createUser() async {
     final cpf = _cpfController.value;
     final date = _dateController.value;
     final condominium = _condominiumController.value;
@@ -44,20 +43,20 @@ class RegisterUserController extends BlocBase with RegisterUserHelper {
     final email = _emailController.value;
     final password = _passwordController.value;
 
-    if (FirebaseAuth.instance.currentUser != null) FirebaseAuth.instance.signOut();
-
     _stateController.add(RegisterUserState.LOADING);
 
-    FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password)
+    await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password)
       .catchError((e) => _stateController.add(RegisterUserState.FAIL));
     
-    FirebaseAuth.instance.onAuthStateChanged.listen((user) => uid = user.uid);
-
-    _stateController.add(RegisterUserState.SUCESS);
-
-    Firestore.instance.collection("dataPeople")
-                          .document(uid).setData({"name" : name, "cpf" : cpf, "date" : date, "condominium" : condominium, "active" : 0, "pass" : 0})
-                          .catchError((e) => _stateController.add(RegisterUserState.FAIL));
+    FirebaseAuth.instance.onAuthStateChanged.listen((user) async {
+      _stateController.add(RegisterUserState.SUCESS);
+      
+      await Firestore.instance.collection("dataPeople")
+        .document(user.uid).setData({"name" : name, "cpf" : cpf, "date" : date, "condominium" : condominium, "active" : 0, "pass" : 0})
+        .catchError((e) => _stateController.add(RegisterUserState.FAIL));
+    });
+    
+    await FirebaseAuth.instance.signOut();
   }
 
   @override

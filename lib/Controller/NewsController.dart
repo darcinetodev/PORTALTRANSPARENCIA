@@ -1,34 +1,52 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
+import 'package:portaltransparencia/Controller/LoginController.dart';
 import 'package:portaltransparencia/Helper/NewsHelper.dart';
 import 'package:portaltransparencia/Model/NewsModel.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class NewsController extends BlocBase with NewsHelper {
-  final _newsController = BehaviorSubject<List>();
+  final _loginController = LoginController();
+  final _newsController = BehaviorSubject<List<NewsModel>>();
 
   final _titleController = BehaviorSubject<String>();
   Stream<String> get outTitle => _titleController.stream;
   final _descController = BehaviorSubject<String>();
   Stream<String> get outDesc => _descController.stream;
-  final _condominiumController = BehaviorSubject<String>();
-  Stream<String> get outCondominium => _condominiumController.stream;
+  Stream<List<NewsModel>> get outNews => _newsController.stream;
 
   final _collection = Firestore.instance.collection("dataNews");
 
   String _documentId;
   String _title;
   String _desc;
+  String _condominium;
 
   NewsController() {
     _titleController.listen((value) => _title = value);
     _descController.listen((value) => _desc = value);
+    chargeNews();
+    chargeCondominium();
   }
 
-  Observable<List<NewsModel>> get outNews =>
-      Observable(_collection.snapshots().map((query) => query.documents
+  void chargeCondominium() {
+    _loginController.outuid.listen((user) => 
+      Firestore.instance.collection("dataPeople").document(user).get().then((doc) {
+        _condominium = doc["condominium"];
+      })
+    );
+  }
+
+  void chargeNews() {
+    _loginController.outuid.listen((user) =>
+      Firestore.instance.collection("dataPeople").document(user).get().then((doc) {
+        Observable(_collection.where("condominium", isEqualTo: doc["condominium"])
+          .snapshots().map((query) => query.documents
           .map<NewsModel>((document) => NewsModel.fromMap(document)
-          ).toList()));
+          ).toList())).listen((onData) => _newsController.add(onData));
+      })
+    );
+  }
 
   void add(NewsModel newsModel) => _collection.add(newsModel.toMap());
   void update(String documentId, NewsModel newsModel) =>
@@ -47,7 +65,8 @@ class NewsController extends BlocBase with NewsHelper {
   bool insertOrUpdate() {
     var newsModel = NewsModel()
       ..title = _title
-      ..desc = _desc;
+      ..desc = _desc
+      ..condominium = _condominium;
 
     if (_documentId?.isEmpty ?? true) {
       add(newsModel);
@@ -65,7 +84,6 @@ class NewsController extends BlocBase with NewsHelper {
     _newsController.close();
     _titleController.close();
     _descController.close();
-    _condominiumController.close();
   }
   
 }

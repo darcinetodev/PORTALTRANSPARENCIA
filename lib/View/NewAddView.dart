@@ -28,6 +28,8 @@ class _NewAddViewState extends State<NewAddView> {
   @override
   void dispose() {
     _newsController.dispose();
+    _titleController.dispose();
+    _descController.dispose();
     super.dispose();
   }
 
@@ -48,9 +50,11 @@ class _NewAddViewState extends State<NewAddView> {
                 ),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(10),
-                  child: Icon(Icons.add_circle,
-                              color: Colors.white,
-                              size: 100),
+                  child: Material(
+                    elevation: 5,
+                    color: Colors.blue,
+                    child: Icon(Icons.fiber_new, color: Colors.white, size: 120,)
+                  ),
                   onTap: () {}
                 ),
               ),

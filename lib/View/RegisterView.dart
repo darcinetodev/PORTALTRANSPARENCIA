@@ -18,7 +18,7 @@ class _RegisterViewState extends State<RegisterView> {
     _registerUserController.outState.listen((state) {
       switch (state) {
         case RegisterUserState.SUCESS:
-          Navigator.of(context).push(
+          Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (context) => WaitView()));
           break;
         case RegisterUserState.FAIL:
