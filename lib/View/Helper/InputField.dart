@@ -6,23 +6,39 @@ class InputField extends StatelessWidget {
   final Stream<String> stream;
   final Function(String) onChanged;
 
-  InputField({this.hint, this.obscure, this.stream, this.onChanged});
+  InputField({this.hint,
+              this.obscure,
+              this.stream,
+              this.onChanged
+            });
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<String>(
       stream: stream,
       builder: (context, snapshot) {
-        return TextField(
-          obscureText: obscure,
-          onChanged: onChanged,
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            hintText: hint,
-            errorText: snapshot.hasError ? snapshot.error : null
-          ),
-          style: TextStyle(fontSize: 20)
-        );
+        return Container(
+          height: 50,
+          decoration: BoxDecoration(
+            border: Border.all(color: snapshot.hasError ? Colors.red : Colors.white,
+                               width: snapshot.hasError ? 2 : 0),
+            color: Colors.black12,
+            borderRadius: BorderRadius.all(Radius.circular(50))),
+            child: Padding(
+              padding: EdgeInsets.only(left: 15, right: 15),
+              child: Center(
+                child: TextField(
+                  obscureText: obscure,
+                  onChanged: onChanged,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: hint,
+                  ),
+                  style: TextStyle(fontSize: 18)
+                ),
+              ),
+            ),
+          );
       },
     );
   }
