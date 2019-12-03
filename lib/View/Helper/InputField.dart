@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class InputField extends StatelessWidget {
   final String hint;
   final bool obscure;
+  final TextInputType input;
   final Stream<String> stream;
   final Function(String) onChanged;
 
   InputField({this.hint,
               this.obscure,
+              this.input,
               this.stream,
               this.onChanged
             });
@@ -28,6 +30,7 @@ class InputField extends StatelessWidget {
               padding: EdgeInsets.only(left: 15, right: 15),
               child: Center(
                 child: TextField(
+                  keyboardType: input,
                   obscureText: obscure,
                   onChanged: onChanged,
                   decoration: InputDecoration(

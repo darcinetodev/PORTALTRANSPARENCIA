@@ -98,6 +98,7 @@ class _LoginViewState extends State<LoginView> {
                                 left: 30, right: 30, bottom: 10),
                               child: InputField(
                                 hint: 'Digite seu e-mail',
+                                input: TextInputType.emailAddress,
                                 obscure: false,
                                 stream: _loginController.outEmail,
                                 onChanged: _loginController.changeEmail,

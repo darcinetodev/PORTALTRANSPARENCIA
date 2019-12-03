@@ -63,14 +63,14 @@ class _RegisterViewState extends State<RegisterView> {
                   children: <Widget>[
                     Container(
                         width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height / 4,
+                        height: MediaQuery.of(context).size.height / 3.5,
                         decoration: BoxDecoration(
                             color: Colors.blue,
                             borderRadius: BorderRadius.only(
                                 bottomLeft: Radius.circular(200),
                                 bottomRight: Radius.circular(200))),
                         child: Icon(
-                          Icons.account_circle,
+                          Icons.add_circle_outline,
                           color: Colors.white,
                           size: 120,
                         )),
@@ -78,140 +78,72 @@ class _RegisterViewState extends State<RegisterView> {
                       children: <Widget>[
                         Padding(
                           padding: EdgeInsets.only(
-                              left: 15, right: 15, bottom: 8, top: 15),
-                          child: Container(
-                            height: 60,
-                            decoration: BoxDecoration(
-                                color: Colors.black12,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(50))),
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 15, right: 15),
-                              child: Center(
-                                child: InputField(
-                                  hint: 'Digite seu nome completo',
-                                  obscure: false,
-                                  stream: _registerUserController.outName,
-                                  onChanged: _registerUserController.changeName
-                                ),
-                              ),
-                            ),
+                              left: 30, right: 30, bottom: 10, top: MediaQuery.of(context).size.height / 20),
+                          child: InputField(
+                            hint: 'Digite seu nome completo',
+                            obscure: false,
+                            stream: _registerUserController.outName,
+                            onChanged: _registerUserController.changeName
                           ),
                         ),
                         Padding(
                           padding:
-                              EdgeInsets.only(left: 15, right: 15, bottom: 8),
-                          child: Container(
-                            height: 60,
-                            decoration: BoxDecoration(
-                                color: Colors.black12,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(50))),
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 15, right: 15),
-                              child: Center(
-                                child: InputField(
+                              EdgeInsets.only(left: 30, right: 30, bottom: 10),
+                          child: InputField(
                                   hint: 'Digite seu CPF',
                                   obscure: false,
+                                  input: TextInputType.number,
                                   stream: _registerUserController.outCpf,
                                   onChanged: _registerUserController.changeCpf,
                                 ),
-                              ),
-                            ),
-                          ),
                         ),
                         Padding(
                           padding:
-                              EdgeInsets.only(left: 15, right: 15, bottom: 8),
-                          child: Container(
-                            height: 60,
-                            decoration: BoxDecoration(
-                                color: Colors.black12,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(50))),
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 15, right: 15),
-                              child: Center(
-                                child: InputField(
+                              EdgeInsets.only(left: 30, right: 30, bottom: 10),
+                          child: InputField(
                                   hint: 'Digite sua data de nascimento',
+                                  input: TextInputType.datetime,
                                   obscure: false,
                                   stream: _registerUserController.outDate,
                                   onChanged: _registerUserController.changeDate,
                                 ),
-                              ),
-                            ),
-                          ),
                         ),
                         Padding(
                           padding:
-                              EdgeInsets.only(left: 15, right: 15, bottom: 8),
-                          child: Container(
-                            height: 60,
-                            decoration: BoxDecoration(
-                                color: Colors.black12,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(50))),
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 15, right: 15),
-                              child: Center(
-                                child: InputField(
+                              EdgeInsets.only(left: 30, right: 30, bottom: 10),
+                          child: InputField(
                                   hint: 'Digite seu e-mail',
+                                  input: TextInputType.emailAddress,
                                   obscure: false,
                                   stream: _registerUserController.outEmail,
                                   onChanged: _registerUserController.changeEmail,
                                 ),
-                              ),
-                            ),
-                          ),
                         ),
                         Padding(
                           padding:
-                              EdgeInsets.only(left: 15, right: 15, bottom: 8),
-                          child: Container(
-                            height: 60,
-                            decoration: BoxDecoration(
-                                color: Colors.black12,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(50))),
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 15, right: 15),
-                              child: Center(
-                                child: InputField(
+                              EdgeInsets.only(left: 30, right: 30, bottom: 10),
+                          child: InputField(
                                   hint: 'Digite sua senha',
                                   obscure: true,
                                   stream: _registerUserController.outPassword,
                                   onChanged: _registerUserController.changePassword,
                                 ),
-                              ),
-                            ),
-                          ),
                         ),
                         Padding(
                           padding:
-                              EdgeInsets.only(left: 15, right: 15, bottom: 8),
-                          child: Container(
-                            height: 60,
-                            decoration: BoxDecoration(
-                                color: Colors.black12,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(50))),
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 15, right: 15),
-                              child: Center(
-                                child: InputField(
+                              EdgeInsets.only(left: 30, right: 30, bottom: 10),
+                          child: InputField(
                                   hint: 'Digite o CNPJ do condominio',
+                                  input: TextInputType.number,
                                   obscure: false,
                                   stream: _registerUserController.outCondominium,
                                   onChanged: _registerUserController.changeCondominium
                                 ),
-                              ),
-                            ),
-                          ),
                         ),
                         Padding(
-                          padding: EdgeInsets.only(left: 15, right: 15),
+                          padding: EdgeInsets.only(left: 30, right: 30),
                           child: Container(
-                            height: 60,
+                            height: 50,
                             width: MediaQuery.of(context).size.width,
                             decoration: BoxDecoration(
                                 color: Colors.blue,
@@ -227,7 +159,7 @@ class _RegisterViewState extends State<RegisterView> {
                                             BorderRadius.circular(50.0)),
                                     child: Text('Cadastrar-se',
                                         style: TextStyle(
-                                            fontSize: 20, color: Colors.white)),
+                                            fontSize: 18, color: Colors.white)),
                                     onPressed: snapshot.hasData
                                         ? _registerUserController.createUser
                                         : null,
