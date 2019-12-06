@@ -31,19 +31,4 @@ class RegisterUserHelper {
       }
     }
   );
-
-  final validateDate = StreamTransformer<String, String>.fromHandlers(
-    handleData: (date, sink){
-      if(date.length == 10){
-        if((date.substring(2, 3).contains('/') && int.parse(date.substring(0, 2)) < 32 &&
-           (date.substring(5, 6).contains('/')) && int.parse(date.substring(3, 5)) < 13))
-          sink.add(date);
-        else
-          sink.addError('Insira uma data válida!');
-      } else {
-        sink.addError('Insira uma data válida!');
-      }
-    }
-  );
-
 }

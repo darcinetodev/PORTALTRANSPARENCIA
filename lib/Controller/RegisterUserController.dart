@@ -19,7 +19,7 @@ class RegisterUserController extends BlocBase with RegisterUserHelper {
   Stream<String> get outEmail => _emailController.stream.transform(validateEmail);
   Stream<String> get outPassword => _passwordController.stream.transform(validatePassword);
   Stream<String> get outCpf => _cpfController.stream.transform(validateCpf);
-  Stream<String> get outDate => _dateController.stream.transform(validateDate);
+  Stream<String> get outDate => _dateController.stream.defaultIfEmpty(dateSet(DateTime.now()));
   Stream<String> get outCondominium => _condominiumController.stream;
   Stream<String> get outName => _nameController.stream;
   Stream<RegisterUserState> get outState => _stateController.stream;
@@ -34,6 +34,15 @@ class RegisterUserController extends BlocBase with RegisterUserHelper {
   Function(String) get changeDate => _dateController.sink.add;
   Function(String) get changeName => _nameController.sink.add;
   Function(String) get changeCondominium => _condominiumController.sink.add;
+
+  String dateSet(DateTime dateTime) {
+    String day = dateTime.day < 10 ? '0' + dateTime.day.toString() : dateTime.day.toString();
+    String month = dateTime.month < 10 ? '0' + dateTime.month.toString() : dateTime.month.toString();
+    String year = dateTime.year.toString();
+    _dateController.add(day + '/' + month + '/' + year);
+
+    return day + '/' + month + '/' + year;
+  }
 
   Future createUser() async {
     final cpf = _cpfController.value;

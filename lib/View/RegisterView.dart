@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:portaltransparencia/Controller/RegisterUserController.dart';
 import 'package:portaltransparencia/View/Helper/InputField.dart';
 import 'package:portaltransparencia/View/WaitView.dart';
@@ -100,13 +102,40 @@ class _RegisterViewState extends State<RegisterView> {
                         Padding(
                           padding:
                               EdgeInsets.only(left: 30, right: 30, bottom: 10),
-                          child: InputField(
-                                  hint: 'Digite sua data de nascimento',
-                                  input: TextInputType.datetime,
-                                  obscure: false,
-                                  stream: _registerUserController.outDate,
-                                  onChanged: _registerUserController.changeDate,
-                                ),
+                          child: Container(
+                            height: 50,
+                            child: Container(
+                                  height: 50,
+                                  width: MediaQuery.of(context).size.width,
+                                  child: FlatButton(
+                                    color: Colors.black12,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.0)),
+                                    child: Container(
+                                      alignment: Alignment.centerLeft,
+                                      child: StreamBuilder<String>(
+                                        stream: _registerUserController.outDate,
+                                        builder: (context, snapshot) {
+                                          return Text(snapshot.data,
+                                                      style: TextStyle(
+                                                        fontSize: 18,
+                                                        color: Colors.black45
+                                                      )
+                                          );
+                                        }
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      DatePicker.showDatePicker(context,
+                                        showTitleActions: true,
+                                        minTime: DateTime(2000, 1, 1),
+                                        maxTime: DateTime(2022, 12, 31),
+                                        onConfirm: (date) {
+                                          _registerUserController.dateSet(date);
+                                        },
+                                        currentTime: DateTime.now(), locale: LocaleType.en);}
+                                  ),
+                            ),
+                          ),
                         ),
                         Padding(
                           padding:
