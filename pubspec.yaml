@@ -43,6 +43,9 @@ dev_dependencies:
   bloc_pattern: ^1.5.2
   shimmer: ^1.0.0
   flutter_datetime_picker: 1.2.8
+  brasil_fields: ^0.0.7+2
+  flutter_screenutil: 0.7.0
+  date_format: 1.0.8
 
 # The following section is specific to Flutter.
 flutter:

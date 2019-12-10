@@ -3,6 +3,7 @@ import 'package:portaltransparencia/Controller/LoginController.dart';
 import 'package:portaltransparencia/View/Helper/InputField.dart';
 import 'package:portaltransparencia/View/HomeView.dart';
 import 'package:portaltransparencia/View/RegisterView.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class LoginView extends StatefulWidget {
   @override
@@ -31,6 +32,7 @@ class _LoginViewState extends State<LoginView> {
           break;
         case LoginState.IDLE:
         case LoginState.LOADING:
+        case LoginState.REGISTER:
       }
     });
   }
@@ -43,6 +45,15 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
+
+    double defaultScreenWidth = 400.0;
+    double defaultScreenHeight = 810.0;
+    ScreenUtil.instance = ScreenUtil(
+      width: defaultScreenWidth,
+      height: defaultScreenHeight,
+      allowFontScaling: true,
+    )..init(context);
+
     return Scaffold(
       body: StreamBuilder<LoginState>(
         stream: _loginController.outState,
@@ -78,15 +89,17 @@ class _LoginViewState extends State<LoginView> {
                       )
                     ),
                     Padding(
-                      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 25),
+                      padding: EdgeInsets.symmetric(horizontal: ScreenUtil.instance.width / 10),
                       child: Column(
                           children: <Widget>[
                             Padding(
                               padding: EdgeInsets.only(top: 70, bottom: 5),
                               child: GestureDetector(
                                 child:
-                                    Text('Ainda não é cadastrado? cadastre-se!'),
+                                    Text('Ainda não é cadastrado? cadastre-se!',
+                                        style: TextStyle(fontSize: ScreenUtil.instance.setSp(14.0))),
                                 onTap: () {
+                                  _loginController.registerStatus();
                                   Navigator.of(context).push(
                                     MaterialPageRoute(builder: (context)=>RegisterView())
                                   );
@@ -94,29 +107,27 @@ class _LoginViewState extends State<LoginView> {
                               ),
                             ),
                             Padding(
-                              padding: EdgeInsets.only(
-                                left: 30, right: 30, bottom: 10),
+                              padding: EdgeInsets.only(bottom: 10),
                               child: InputField(
                                 hint: 'Digite seu e-mail',
                                 input: TextInputType.emailAddress,
                                 obscure: false,
                                 stream: _loginController.outEmail,
                                 onChanged: _loginController.changeEmail,
+                                fontSize: ScreenUtil.instance.setSp(16.0),
                               ),
                             ),
                             Padding(
-                              padding: EdgeInsets.only(
-                                left: 30, right: 30, bottom: 10),
+                              padding: EdgeInsets.only(bottom: 10),
                               child: InputField(
                                 hint: 'Digite sua senha',
                                 obscure: true,
                                 stream: _loginController.outPassword,
                                 onChanged: _loginController.changePassword,
+                                fontSize: ScreenUtil.instance.setSp(16.0),
                               ),
                             ),
-                            Padding(
-                              padding: EdgeInsets.only(left: 30, right: 30),
-                              child: Container(
+                            Container(
                                 height: 50,
                                 width: MediaQuery.of(context).size.width,
                                 decoration: BoxDecoration(
@@ -128,14 +139,17 @@ class _LoginViewState extends State<LoginView> {
                                     return FlatButton(
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(50.0)),
-                                      child: Text('Logar',  style: TextStyle(
-                                        fontSize: 18, color: Colors.white)),
+                                      child: Text('Logar',
+                                                  style: TextStyle(
+                                                    fontSize: ScreenUtil.instance.setSp(16.0),
+                                                    color: Colors.white
+                                                  )
+                                                ),
                                       onPressed: snapshot.hasData ? _loginController.submit : null,
                                     );
                                   },
                                 ),
-                              ),
-                            )
+                              )
                           ],
                         )
                     )

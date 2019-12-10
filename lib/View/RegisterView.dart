@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:portaltransparencia/Controller/RegisterUserController.dart';
 import 'package:portaltransparencia/View/Helper/InputField.dart';
 import 'package:portaltransparencia/View/WaitView.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:date_format/date_format.dart';
 
 class RegisterView extends StatefulWidget {
   @override
@@ -45,6 +48,15 @@ class _RegisterViewState extends State<RegisterView> {
 
   @override
   Widget build(BuildContext context) {
+
+    double defaultScreenWidth = 400.0;
+    double defaultScreenHeight = 810.0;
+    ScreenUtil.instance = ScreenUtil(
+      width: defaultScreenWidth,
+      height: defaultScreenHeight,
+      allowFontScaling: true,
+    )..init(context);
+
     return Scaffold(
       body: StreamBuilder<Object>(
           stream: _registerUserController.outState,
@@ -76,127 +88,131 @@ class _RegisterViewState extends State<RegisterView> {
                           color: Colors.white,
                           size: 120,
                         )),
-                    Column(
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.only(
-                              left: 30, right: 30, bottom: 10, top: MediaQuery.of(context).size.height / 20),
-                          child: InputField(
-                            hint: 'Digite seu nome completo',
-                            obscure: false,
-                            stream: _registerUserController.outName,
-                            onChanged: _registerUserController.changeName
-                          ),
-                        ),
-                        Padding(
-                          padding:
-                              EdgeInsets.only(left: 30, right: 30, bottom: 10),
-                          child: InputField(
-                                  hint: 'Digite seu CPF',
-                                  obscure: false,
-                                  input: TextInputType.number,
-                                  stream: _registerUserController.outCpf,
-                                  onChanged: _registerUserController.changeCpf,
-                                ),
-                        ),
-                        Padding(
-                          padding:
-                              EdgeInsets.only(left: 30, right: 30, bottom: 10),
-                          child: Container(
-                            height: 50,
-                            child: Container(
-                                  height: 50,
-                                  width: MediaQuery.of(context).size.width,
-                                  child: FlatButton(
-                                    color: Colors.black12,
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.0)),
-                                    child: Container(
-                                      alignment: Alignment.centerLeft,
-                                      child: StreamBuilder<String>(
-                                        stream: _registerUserController.outDate,
-                                        builder: (context, snapshot) {
-                                          return Text(snapshot.data,
-                                                      style: TextStyle(
-                                                        fontSize: 18,
-                                                        color: Colors.black45
-                                                      )
-                                          );
-                                        }
-                                      ),
-                                    ),
-                                    onPressed: () {
-                                      DatePicker.showDatePicker(context,
-                                        showTitleActions: true,
-                                        minTime: DateTime(2000, 1, 1),
-                                        maxTime: DateTime(2022, 12, 31),
-                                        onConfirm: (date) {
-                                          _registerUserController.dateSet(date);
-                                        },
-                                        currentTime: DateTime.now(), locale: LocaleType.en);}
-                                  ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: ScreenUtil.instance.width / 10),
+                      child: Column(
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.only(bottom: 10, top: MediaQuery.of(context).size.height / 20),
+                            child: InputField(
+                              hint: 'Digite seu nome completo',
+                              obscure: false,
+                              stream: _registerUserController.outName,
+                              onChanged: _registerUserController.changeName,
+                              fontSize: ScreenUtil.instance.setSp(14.0),
                             ),
                           ),
-                        ),
-                        Padding(
-                          padding:
-                              EdgeInsets.only(left: 30, right: 30, bottom: 10),
-                          child: InputField(
-                                  hint: 'Digite seu e-mail',
-                                  input: TextInputType.emailAddress,
-                                  obscure: false,
-                                  stream: _registerUserController.outEmail,
-                                  onChanged: _registerUserController.changeEmail,
-                                ),
-                        ),
-                        Padding(
-                          padding:
-                              EdgeInsets.only(left: 30, right: 30, bottom: 10),
-                          child: InputField(
-                                  hint: 'Digite sua senha',
-                                  obscure: true,
-                                  stream: _registerUserController.outPassword,
-                                  onChanged: _registerUserController.changePassword,
-                                ),
-                        ),
-                        Padding(
-                          padding:
-                              EdgeInsets.only(left: 30, right: 30, bottom: 10),
-                          child: InputField(
-                                  hint: 'Digite o CNPJ do condominio',
-                                  input: TextInputType.number,
-                                  obscure: false,
-                                  stream: _registerUserController.outCondominium,
-                                  onChanged: _registerUserController.changeCondominium
-                                ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 30, right: 30),
-                          child: Container(
-                            height: 50,
-                            width: MediaQuery.of(context).size.width,
-                            decoration: BoxDecoration(
-                                color: Colors.blue,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(50))),
-                            child: StreamBuilder<bool>(
-                                stream:
-                                    _registerUserController.outRegisterValid,
-                                builder: (context, snapshot) {
-                                  return FlatButton(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(50.0)),
-                                    child: Text('Cadastrar-se',
-                                        style: TextStyle(
-                                            fontSize: 18, color: Colors.white)),
-                                    onPressed: snapshot.hasData
-                                        ? _registerUserController.createUser
-                                        : null,
-                                  );
-                                }),
+                          Padding(
+                            padding:
+                                EdgeInsets.only(bottom: 10),
+                            child: InputField(
+                                    hint: 'Digite seu CPF',
+                                    input: TextInputType.number,
+                                    obscure: false,
+                                    stream: _registerUserController.outCpf,
+                                    onChanged: _registerUserController.changeCpf,
+                                    fontSize: ScreenUtil.instance.setSp(14.0)
+                                  ),
                           ),
-                        )
-                      ],
+                          Padding(
+                            padding:
+                                EdgeInsets.only(bottom: 10),
+                            child: Container(
+                              height: 50,
+                              child: Container(
+                                    height: 50,
+                                    width: MediaQuery.of(context).size.width,
+                                    child: StreamBuilder<DateTime>(
+                                      stream: _registerUserController.outDate,
+                                      builder: (context, snapshot) {
+                                        return FlatButton(
+                                          color: Colors.black12,
+                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.0)),
+                                          child: Container(
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(snapshot.hasData ? formatDate(snapshot.data, [dd, '/', mm, '/', yyyy])
+                                                                         : formatDate(DateTime.now(), [dd, '/', mm, '/', yyyy]),
+                                                          style: TextStyle(
+                                                            fontSize: ScreenUtil.instance.setSp(14.0),
+                                                            color: Colors.black45
+                                                        )
+                                                      )
+                                                  ),
+                                          onPressed: () {
+                                            DatePicker.showDatePicker(context,
+                                              showTitleActions: true,
+                                              minTime: DateTime(1900, 1, 1),
+                                              maxTime: DateTime.now(),
+                                              onConfirm: (date) {
+                                                _registerUserController.changeDate(date);
+                                              },
+                                              currentTime: snapshot.data, locale: LocaleType.pt);
+                                          }
+                                        );
+                                      }
+                                    ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding:
+                                EdgeInsets.only(bottom: 10),
+                            child: InputField(
+                                    hint: 'Digite seu e-mail',
+                                    input: TextInputType.emailAddress,
+                                    obscure: false,
+                                    stream: _registerUserController.outEmail,
+                                    onChanged: _registerUserController.changeEmail,
+                                    fontSize: ScreenUtil.instance.setSp(14.0)
+                                  ),
+                          ),
+                          Padding(
+                            padding:
+                                EdgeInsets.only(bottom: 10),
+                            child: InputField(
+                                    hint: 'Digite sua senha',
+                                    obscure: true,
+                                    stream: _registerUserController.outPassword,
+                                    onChanged: _registerUserController.changePassword,
+                                    fontSize: ScreenUtil.instance.setSp(14.0)
+                                  ),
+                          ),
+                          Padding(
+                            padding:
+                                EdgeInsets.only(bottom: 10),
+                            child: InputField(
+                                    hint: 'Digite o CNPJ do condominio',
+                                    input: TextInputType.number,
+                                    obscure: false,
+                                    stream: _registerUserController.outCondominium,
+                                    onChanged: _registerUserController.changeCondominium,
+                                    fontSize: ScreenUtil.instance.setSp(14.0)
+                                  ),
+                          ),
+                          Container(
+                              height: 50,
+                              width: MediaQuery.of(context).size.width,
+                              decoration: BoxDecoration(
+                                  color: Colors.blue,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(50))),
+                              child: StreamBuilder<bool>(
+                                  stream: _registerUserController.outRegisterValid,
+                                  builder: (context, snapshot) {
+                                    return FlatButton(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(50.0)),
+                                      child: Text('Cadastrar-se',
+                                          style: TextStyle(
+                                              fontSize: ScreenUtil.instance.setSp(14.0), color: Colors.white)),
+                                      onPressed: snapshot.hasData
+                                          ? _registerUserController.createUser
+                                          : null,
+                                    );
+                                  }),
+                            )
+                        ],
+                      ),
                     )
                   ],
                 ));

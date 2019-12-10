@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class InputField extends StatelessWidget {
   final String hint;
@@ -6,12 +7,14 @@ class InputField extends StatelessWidget {
   final TextInputType input;
   final Stream<String> stream;
   final Function(String) onChanged;
+  final double fontSize;
 
   InputField({this.hint,
               this.obscure,
               this.input,
               this.stream,
-              this.onChanged
+              this.onChanged,
+              this.fontSize
             });
 
   @override
@@ -37,7 +40,7 @@ class InputField extends StatelessWidget {
                     border: InputBorder.none,
                     hintText: hint,
                   ),
-                  style: TextStyle(fontSize: 18)
+                  style: TextStyle(fontSize: fontSize)
                 ),
               ),
             ),

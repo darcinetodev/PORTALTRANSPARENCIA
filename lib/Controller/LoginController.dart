@@ -4,7 +4,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-enum LoginState {IDLE, LOADING, SUCESS, FAIL}
+enum LoginState {IDLE, LOADING, SUCESS, FAIL, REGISTER}
 
 class LoginController extends BlocBase with LoginHelper {
 
@@ -12,6 +12,7 @@ class LoginController extends BlocBase with LoginHelper {
   final _passwordController = BehaviorSubject<String>();
   final _stateController = BehaviorSubject<LoginState>();
   final _uidController = BehaviorSubject<String>();
+  bool isDispose = false;
 
   Stream<String> get outEmail => _emailController.stream.transform(validateEmail);
   Stream<String> get outPassword => _passwordController.stream.transform(validatePassword);
@@ -25,6 +26,10 @@ class LoginController extends BlocBase with LoginHelper {
   Function(String) get changeEmail => _emailController.sink.add;
   Function(String) get changePassword => _passwordController.sink.add;
 
+  void registerStatus() {
+    _stateController.add(LoginState.REGISTER);
+  }
+
   LoginController() {
     auth();
   }
@@ -33,7 +38,7 @@ class LoginController extends BlocBase with LoginHelper {
     FirebaseAuth.instance.onAuthStateChanged.listen((user) async {
       if(user != null) {
         _uidController.add(user.uid);
-        
+          
         await Firestore.instance.collection("dataPeople").document(user.uid).get().then((doc) async {
           if(doc.data["active"] == 1){
             _stateController.add(LoginState.SUCESS);
@@ -42,7 +47,7 @@ class LoginController extends BlocBase with LoginHelper {
             _stateController.add(LoginState.FAIL);
             await FirebaseAuth.instance.signOut();
           }}).catchError((e) async {
-            _stateController.add(LoginState.FAIL);
+            _stateController.add(LoginState.IDLE);
             await FirebaseAuth.instance.signOut();
           });
       } else {
