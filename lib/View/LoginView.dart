@@ -17,6 +17,8 @@ class _LoginViewState extends State<LoginView> {
   void initState() {
     super.initState();
 
+    _loginController.verification();
+
     _loginController.outState.listen((state) {
       switch(state) {
         case LoginState.SUCESS:
@@ -32,7 +34,6 @@ class _LoginViewState extends State<LoginView> {
           break;
         case LoginState.IDLE:
         case LoginState.LOADING:
-        case LoginState.REGISTER:
       }
     });
   }
@@ -99,7 +100,6 @@ class _LoginViewState extends State<LoginView> {
                                     Text('Ainda não é cadastrado? cadastre-se!',
                                         style: TextStyle(fontSize: ScreenUtil.instance.setSp(14.0))),
                                 onTap: () {
-                                  _loginController.registerStatus();
                                   Navigator.of(context).push(
                                     MaterialPageRoute(builder: (context)=>RegisterView())
                                   );

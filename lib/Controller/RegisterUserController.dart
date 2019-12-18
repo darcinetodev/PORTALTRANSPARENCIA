@@ -1,8 +1,7 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
+import 'package:portaltransparencia/Helper/AuthRegister.dart';
 import 'package:portaltransparencia/Helper/RegisterHelper.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum RegisterUserState {IDLE, LOADING, SUCESS, FAIL}
 
@@ -35,38 +34,38 @@ class RegisterUserController extends BlocBase with RegisterUserHelper {
   Function(String) get changeName => _nameController.sink.add;
   Function(String) get changeCondominium => _condominiumController.sink.add;
 
-  Future createUser() async {
-    final cpf = _cpfController.value;
-    final date = _dateController.value;
-    final condominium = _condominiumController.value;
-    final name = _nameController.value;
-    final email = _emailController.value;
-    final password = _passwordController.value;
+  createUser() async {
 
     _stateController.add(RegisterUserState.LOADING);
 
-    await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password)
-      .catchError((e) => _stateController.add(RegisterUserState.FAIL));
-    
-    FirebaseAuth.instance.onAuthStateChanged.listen((user) async {
-      _stateController.add(RegisterUserState.SUCESS);
-      
-      await Firestore.instance.collection("dataPeople")
-        .document(user.uid).setData({"name" : name, "cpf" : cpf, "date" : date, "condominium" : condominium, "active" : 0, "pass" : 0})
-        .catchError((e) => _stateController.add(RegisterUserState.FAIL));
+    AuthRegister(_cpfController.value,
+                _dateController.value,
+                _condominiumController.value,
+                _nameController.value,
+                _emailController.value,
+                _passwordController.value)
+      .registerFirebase().then((data) {
+        data != null ? _stateController.add(RegisterUserState.SUCESS)
+                     : _stateController.add(RegisterUserState.FAIL);
+
     });
-    
-    await FirebaseAuth.instance.signOut();
   }
 
   @override
-  dispose() {
+  dispose() async {
+    await _emailController.drain();
     _emailController.close();
+    await _passwordController.drain();
     _passwordController.close();
+    await _nameController.drain();
     _nameController.close();
+    await _cpfController.drain();
     _cpfController.close();
+    await _dateController.drain();
     _dateController.close();
+    await _condominiumController.drain();
     _condominiumController.close();
+    await _stateController.drain();
     _stateController.close();
   }
   

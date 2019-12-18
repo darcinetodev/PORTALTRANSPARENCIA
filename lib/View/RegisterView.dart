@@ -58,7 +58,7 @@ class _RegisterViewState extends State<RegisterView> {
     )..init(context);
 
     return Scaffold(
-      body: StreamBuilder<Object>(
+      body: StreamBuilder<RegisterUserState>(
           stream: _registerUserController.outState,
           builder: (context, snapshot) {
             switch (snapshot.data) {

@@ -1,10 +1,10 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
+import 'package:portaltransparencia/Helper/Auth.dart';
 import 'package:portaltransparencia/Helper/LoginHelper.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
-enum LoginState {IDLE, LOADING, SUCESS, FAIL, REGISTER}
+enum LoginState {IDLE, LOADING, SUCESS, FAIL}
 
 class LoginController extends BlocBase with LoginHelper {
 
@@ -12,7 +12,6 @@ class LoginController extends BlocBase with LoginHelper {
   final _passwordController = BehaviorSubject<String>();
   final _stateController = BehaviorSubject<LoginState>();
   final _uidController = BehaviorSubject<String>();
-  bool isDispose = false;
 
   Stream<String> get outEmail => _emailController.stream.transform(validateEmail);
   Stream<String> get outPassword => _passwordController.stream.transform(validatePassword);
@@ -26,54 +25,33 @@ class LoginController extends BlocBase with LoginHelper {
   Function(String) get changeEmail => _emailController.sink.add;
   Function(String) get changePassword => _passwordController.sink.add;
 
-  void registerStatus() {
-    _stateController.add(LoginState.REGISTER);
+  verification() async {
+    Future<FirebaseUser> auth = Auth(null, null).autoLogin();
+    auth.then((data) {
+      _uidController.add(data.uid);
+      _stateController.add(LoginState.SUCESS);
+    }).catchError((e) => _stateController.add(LoginState.IDLE));
   }
 
-  LoginController() {
-    auth();
-  }
-
-  Future auth() async {
-    FirebaseAuth.instance.onAuthStateChanged.listen((user) async {
-      if(user != null) {
-        _uidController.add(user.uid);
-          
-        await Firestore.instance.collection("dataPeople").document(user.uid).get().then((doc) async {
-          if(doc.data["active"] == 1){
-            _stateController.add(LoginState.SUCESS);
-          }
-          else {
-            _stateController.add(LoginState.FAIL);
-            await FirebaseAuth.instance.signOut();
-          }}).catchError((e) async {
-            _stateController.add(LoginState.IDLE);
-            await FirebaseAuth.instance.signOut();
-          });
-      } else {
-        _stateController.add(LoginState.IDLE);
-      }
-    });
-  }
-
-  Future submit() async {
-    final email = _emailController.value;
-    final password = _passwordController.value;
-
+  submit() async {
     _stateController.add(LoginState.LOADING);
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-      email: email,
-      password: password
-    ).catchError((e) {
-      _stateController.add(LoginState.FAIL);
-    });
+
+    Future<AuthResult> auth = Auth(_emailController.value, _passwordController.value).authFirebase();
+    auth.then((data) {
+      _uidController.add(data.user.uid);
+      _stateController.add(LoginState.SUCESS);
+    }).catchError((e) => _stateController.add(LoginState.FAIL));
   }
 
   @override
-  dispose() {
+  dispose() async {
+    await _emailController.drain();
     _emailController.close();
+    await _passwordController.drain();
     _passwordController.close();
+    await _stateController.drain();
     _stateController.close();
+    await _uidController.drain();
     _uidController.close();
   }
   
